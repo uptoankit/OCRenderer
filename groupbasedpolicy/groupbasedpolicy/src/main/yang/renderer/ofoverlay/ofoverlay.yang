@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+module ofoverlay {
+    yang-version 1;
+
+    namespace "urn:opendaylight:groupbasedpolicy:ofoverlay";
+    prefix "ofoverlay";
+
+    import ietf-inet-types { prefix "inet"; revision-date 2010-09-24; }
+
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+    import opendaylight-inventory {prefix inv;revision-date "2013-08-19";}
+
+    import gbp-common {prefix gbp-common;}
+    import endpoint {prefix endpoint;}
+
+    description
+        "This module defines the group-based policy ofoverlay renderer model.";
+
+    revision "2014-05-28" {
+        description
+            "Initial revision.";
+    }
+
+    // ******************
+    // Configuration Data
+    // ******************
+    container of-overlay-config {
+        description
+            "Configuration for the OpenFlow overlay renderer";
+
+        config true;
+
+        leaf encapsulation-format {
+            description "The encapsulation format to use for tunnels";
+            type enumeration {
+                enum vxlan {
+                    description "Use VXLAN encapsulation";
+                }
+            }
+        }
+
+        leaf learning-mode {
+            description 
+                "Selects how and whether we learn endpoints";
+            type enumeration {
+                enum orchestrated {
+                    description 
+                        "An external orchestration system will provide 
+                         information about all endpoints, and no
+                         direct learning will occur.";
+                }
+            }
+        }
+    }
+    /*
+    container of-overlay-operational {
+        description 
+            "Operational parameters for the OpenFlow overlay renderer";
+
+        config false;
+
+        list data-plane-ordinal {
+            description 
+                "Map elements of the policy to the id used on the network";
+            key "tenant id";
+            leaf tenant {
+                description "The tenant for the policy element";
+                type gbp-common:tenant-id;
+            }
+            leaf id {
+                description "The ID of the item";
+                type gbp-common:unique-id;
+            }
+            leaf ordinal {
+                description "The 32-bit ordinal for the item";
+                type uint32;
+            }
+        }
+    }
+    */
+    grouping endpoint-location {
+        description 
+            "The location for this endpoint in the overlay network";
+
+        leaf location-type {
+            default internal;
+
+            type enumeration {
+                enum internal {
+                    description 
+                    "The endpoint is located on a port that is part of 
+                     the overlay network.  You must include the node
+                     ID and port number for this endpoint.";
+                }
+                enum external {
+                    description "This endpoint is not inside the overlay.";
+                }
+            }
+        }
+
+        leaf node-id {
+            description 
+                "The OpenFlow switch for the endpoint. Must be included 
+                 for all internal endpoints.  The format is
+                 openflow:[dpid] where the dpid is the value of the
+                 switch DPID cast to a long.";
+            type inv:node-id;
+        }
+
+        leaf node-connector-id {
+            description 
+                "The node connector for the endpoint's OpenFlow port. The 
+                 format is openflow:[dpid]:[port] where the dpid is
+                 the value of the switch DPID cast to a long, and port
+                 is the openflow port number of the interface where
+                 the endpoint is connected.";
+            type inv:node-connector-id;
+        }
+    }
+
+    augment "/endpoint:endpoints/endpoint:endpoint" {
+        ext:augment-identifier "of-overlay-context";
+        uses endpoint-location;
+    }
+
+    augment "/endpoint:register-endpoint/endpoint:input" {
+        ext:augment-identifier "of-overlay-context-input";
+        uses endpoint-location;
+    }
+
+    augment "/inv:nodes/inv:node" {
+        ext:augment-identifier "of-overlay-node-config";
+
+        leaf tunnel-ip {
+            description 
+                "The IP address used for tunnel termination on this switch";
+            type inet:ip-address;
+        }
+        container ovsdb-config {
+            leaf ip {
+                description 
+                    "The IP address used to connect to OVSDB on this switch";
+                type inet:ip-address;
+            }
+            leaf port {
+                description 
+                    "The port number used to connect to OVSDB on this switch";
+                type inet:port-number;
+                default 6640;
+            }
+        }
+        leaf-list external-interfaces {
+            description 
+                "The names of the OpenFlow interfaces that are external and 
+                 lead to the underlay network.  Can be specified as a 
+                 regular expression.";
+            type string;
+        }
+    }
+}

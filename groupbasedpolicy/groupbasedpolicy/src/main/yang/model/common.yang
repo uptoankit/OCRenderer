@@ -1,0 +1,254 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+
+module gbp-common {
+    yang-version 1;
+
+    namespace "urn:opendaylight:groupbasedpolicy:common";
+    prefix "gbp-common";
+
+    description 
+        "Common types and definitions for group-based policy models";
+
+    revision "2014-04-21" {
+        description "Initial revision";
+    }
+
+    // **********
+    // Base types
+    // **********
+
+    typedef description {
+        description "A human-readable description for a object.";
+        type string {
+            length "1..4096";
+        }
+    }
+
+    typedef name {
+        description 
+            "A generic string name type. 
+             Must start with a letter";
+        type string {
+            pattern '[a-zA-Z]([a-zA-Z0-9\-_.])*';
+            length "1..256";
+        }
+    }
+
+    // UUID type from ietf-yang-types@2013-07-15
+    typedef uuid {
+        type string {
+            pattern '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
+                + '[0-9a-fA-F]{4}-[0-9a-fA-F]{12}';
+        }
+        description
+            "A Universally Unique IDentifier in the string representation 
+             defined in RFC 4122.  The canonical representation uses
+             lowercase characters.
+
+             The following is an example of a UUID in string
+             representation: f81d4fae-7dec-11d0-a765-00a0c91e6bf6";
+        reference
+            "RFC 4122: A Universally Unique IDentifier (UUID) URN
+             Namespace";
+    }
+
+    typedef unique-id {
+        type uuid;
+        description "A globally unique identifier";
+    }
+
+    // *************
+    // Relator names
+    // *************
+
+    typedef relator-name {
+        type name;
+        description "A name for a relator.";
+    }
+
+    typedef target-name {
+        type relator-name;
+        description "A name for a target.";
+    }
+
+    typedef selector-name {
+        type relator-name;
+        description "A name for a selector.";
+    }
+
+    // *****************
+    // Unique object IDs
+    // *****************
+
+    typedef network-domain-id {
+        type unique-id;
+        description "A unique ID for a network domain";
+    }
+    
+    typedef subnet-id {
+        type network-domain-id;
+        description "A unique ID for a subnet";
+    }
+
+    typedef context-id {
+        type network-domain-id;
+        description "A unique ID for a forwarding context";
+    }
+
+    typedef l2-context-id {
+        type context-id;
+        description "A unique ID for a layer 2 context";
+    }
+
+    typedef l2-bridge-domain-id {
+        type l2-context-id;
+        description "A unique ID for a bridge domain";
+    }
+
+    typedef l2-flood-domain-id {
+        type l2-context-id;
+        description "A unique ID for a flood domain";
+    }
+
+    typedef l3-context-id {
+        type context-id;
+        description "A unique ID for a layer 3 context";
+    }
+
+    typedef tenant-id {
+        type unique-id;
+        description "A unique ID for a tenant";
+    }
+
+    typedef endpoint-group-id {
+        type unique-id;
+        description "A unique ID for an endpoint group";
+    }
+
+    typedef contract-id {
+        type unique-id;
+        description "A unique ID for a contract";
+    }
+
+    // *************
+    // Matcher names
+    // *************
+
+    typedef matcher-name {
+        type name;
+        description "A name for a matcher";
+    }
+
+    typedef quality-matcher-name {
+        type matcher-name;
+        description "A name for a quality matcher";
+    }
+
+    typedef requirement-matcher-name {
+        type matcher-name;
+        description "A name for a requirement matcher";
+    }
+
+    typedef condition-matcher-name {
+        type matcher-name;
+        description "A name for a condition matcher";
+    }
+
+    typedef capability-matcher-name {
+        type matcher-name;
+        description "A name for a capability matcher";
+    }
+
+    // *************
+    // Label names
+    // *************
+
+    typedef label-name {
+	type name;
+	description "A name for a label";
+    }
+
+    typedef capability-name {
+	type label-name;
+	description "A name for a capability";
+    }
+
+    typedef requirement-name {
+	type label-name;
+	description "A name for a requirement";
+    }
+
+    typedef quality-name {
+        type label-name;
+        description "A name for a quality.";
+    }
+
+    typedef condition-name {
+        type label-name;
+        description "A name for a condition.";
+    }
+
+    // ****************************
+    // Subject/clause-related names
+    // ****************************
+
+    typedef clause-name {
+        type name;
+        description "A name for a clause.";
+    }
+
+    typedef subject-name {
+        type name;
+        description "A name for a subject.";
+    }
+
+    typedef rule-name {
+        type name;
+        description "A name for a rule.";
+    }
+
+    // ****************
+    // Subject features
+    // ****************
+
+    typedef subject-feature-id {
+        type unique-id;
+        description "A unique ID for a parameterized object";
+    }
+
+    typedef classifier-definition-id {
+        type subject-feature-id;
+        description "A unique ID for a classifier.";
+    }
+
+    typedef action-definition-id {
+        type subject-feature-id;
+        description "A unique ID for an action.";
+    }
+
+    typedef subject-feature-name {
+        type name;
+        description "A name for a parameterized object";
+    }
+
+    typedef classifier-name {
+        type subject-feature-name;
+        description "A name for a classifier.";
+    }
+
+    typedef action-name {
+        type subject-feature-name;
+        description "A name for an action.";
+    }
+
+    typedef parameter-name {
+        type name;
+        description "A name for a parameter.";
+    }
+}
