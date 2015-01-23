@@ -13,6 +13,10 @@
 
   <properties>
     <openflowplugin-nicira.version>0.1.0-SNAPSHOT</openflowplugin-nicira.version>
+    <guava.version>14.0.1</guava.version>
+    <xtend.version>2.4.3</xtend.version>
+    <bundle.plugin.version>2.4.0</bundle.plugin.version>
+    <maven.clean.plugin.version>2.5</maven.clean.plugin.version>
   </properties>
 
   <repositories>
@@ -26,25 +30,18 @@
    </repository>
   </repositories>
   <dependencies>
-        <dependency>
+    <dependency>
 	<groupId>net.juniper.contrail</groupId>
 	<artifactId>juniper-contrail-api</artifactId>
 	<version>1.2</version>
 	</dependency>
-     <dependency>
-    	<groupId>org.apache.httpcomponents</groupId>
-    	<artifactId>httpcore</artifactId>
-    	<version>4.2.1</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.apache.httpcomponents</groupId>
-    	<artifactId>httpclient</artifactId>
-    	<version>4.2.1</version>
-    </dependency>
+	 <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      </dependency>
 	<dependency>
 	<groupId>commons-lang</groupId>
 	<artifactId>commons-lang</artifactId>
-	<version>2.6</version>
 	</dependency>
 	<dependency>
     	<groupId>org.apache.commons</groupId>
@@ -134,10 +131,9 @@
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <artifactId>junit</artifactId>    
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -156,11 +152,10 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-	    <Import-Package>
-	       org.apache.*,*
-	    </Import-Package>
-	    <Embed-Dependency>httpclient,httpcore,commons-lang;commons-exec,type=!pom;inline=false</Embed-Dependency>
-            <Export-Package>
+	  <Import-Package>
+          *;resolution:=optional
+	    </Import-Package> 
+         <Export-Package>
 	      org.opendaylight.yang.gen.v1.urn.opendaylight.groupbasedpolicy.*,
 	      org.opendaylight.controller.config.yang.config.endpoint_provider,
 	      org.opendaylight.groupbasedpolicy.endpoint,
